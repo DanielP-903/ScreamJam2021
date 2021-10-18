@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private bool m_interact = false;
     private float m_inputTimer = 0.0f;
 
+    [SerializeField] private float m_timeBetweenInputs = 0.0f;
     [SerializeField] private float m_speed;
     [SerializeField] private float m_rotationSpeed;
 
@@ -40,12 +41,20 @@ public class PlayerController : MonoBehaviour
             m_inputTimer = m_inputTimer < 0.01f ? 0.0f : m_inputTimer;
         }
 
+        if (m_inputTimer == 0.0f)
+        {
+            if (m_interact)
+            {
+                m_inputTimer = m_timeBetweenInputs;
+            }
+        }
+
         m_characterController.Move(m_gravity * Time.deltaTime);
 
         if (m_rotLeft || m_rotRight)
         {
             float multiplier = m_rotLeft ? -1 : 1;
-            //transform.Rotate(0, m_rotationSpeed * multiplier * Time.deltaTime * 200.0f, 0);
+            transform.Rotate(0, m_rotationSpeed * multiplier * Time.deltaTime * 200.0f, 0);
         }
     }
 
