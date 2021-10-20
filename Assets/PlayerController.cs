@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.InputSystem;
 
@@ -21,9 +22,34 @@ public class PlayerController : MonoBehaviour
     private readonly Vector3 m_gravity = new Vector3(0, -9.8f, 0);
     private CharacterController m_characterController;
 
+    internal bool IsHoldingMatch { get; set; }
+
+    [SerializeField] private float m_matchDuration = 5.0f;
+    [SerializeField] private float m_matchTimer = 0.0f;
+
+    [SerializeField] private GameObject m_matchObject;
+
+    private Light m_light;
     void Start()
     {
         m_characterController = GetComponent<CharacterController>();
+        m_light = m_matchObject.GetComponentInChildren<Light>();
+        IsHoldingMatch = true;
+    }
+
+    private void UpdateMatch()
+    {
+        if (IsHoldingMatch)
+        {
+            if (m_matchTimer < 0.01f)
+            {
+                m_light.intensity = Mathf.Lerp(m_light.intensity, 0.0f, Time.deltaTime / m_matchDuration);
+            }
+            else
+            {
+                m_matchTimer -= Time.deltaTime;
+            }
+        }
     }
 
     // Update is called once per frame
@@ -46,6 +72,8 @@ public class PlayerController : MonoBehaviour
             if (m_interact)
             {
                 m_inputTimer = m_timeBetweenInputs;
+                m_light.intensity = 3.0f;
+                m_matchTimer = 5.0f;
             }
         }
 
@@ -56,6 +84,8 @@ public class PlayerController : MonoBehaviour
             float multiplier = m_rotLeft ? -1 : 1;
             transform.Rotate(0, m_rotationSpeed * multiplier * Time.deltaTime * 200.0f, 0);
         }
+
+        UpdateMatch();
     }
 
     // Input Actions
