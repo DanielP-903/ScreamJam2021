@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_matchTimer = 0.0f;
 
     [SerializeField] private GameObject m_matchObject;
+    [SerializeField] private TMPro.TextMeshProUGUI m_deathText;
+
+    private float m_deathChance = 0.0f;
 
     private Light m_light;
     void Start()
@@ -44,12 +47,21 @@ public class PlayerController : MonoBehaviour
             if (m_matchTimer < 0.01f)
             {
                 m_light.intensity = Mathf.Lerp(m_light.intensity, 0.0f, Time.deltaTime / m_matchDuration);
+                if (m_light.intensity < 0.01f)
+                {
+                    m_light.intensity = 0.0f;
+                }
             }
             else
             {
                 m_matchTimer -= Time.deltaTime;
             }
         }
+
+        m_deathChance = 100.0f - ((m_light.intensity * 100.0f) / 3.0f);
+
+        m_deathText.text = "How fucked you are: " + (int)m_deathChance + "%";
+
     }
 
     // Update is called once per frame
