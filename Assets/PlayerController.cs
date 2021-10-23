@@ -29,9 +29,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_matchTimer = 0.0f;
 
     [SerializeField] private GameObject m_matchObject;
-    [SerializeField] private TMPro.TextMeshProUGUI m_deathText;
+    //[SerializeField] private TMPro.TextMeshProUGUI m_deathText;
     [SerializeField] private GameObject m_death;
-    [SerializeField] private GameObject m_safe;
+    //[SerializeField] private GameObject m_safe;
     [SerializeField] private float m_lightDistanceThreshold;
 
     [SerializeField] private GameObject _pAdd;
@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
             bool isCloseToLightSource = CheckNearLightSources();
             if (IsHoldingMatch && !isCloseToLightSource)
             {
-                m_safe.SetActive(false);
+                //m_safe.SetActive(false);
                 if (m_matchTimer < 0.01f)
                 {
                     m_light.intensity = Mathf.Lerp(m_light.intensity, 0.0f, Time.deltaTime / m_matchDuration);
@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (isCloseToLightSource)
             {
-                m_safe.SetActive(true);
+                //m_safe.SetActive(true);
                 m_light.intensity = 3.0f;
                 _pAdd.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
                 _pAlpha.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
             }
         
             m_deathChance = 100.0f - ((m_light.intensity * 100.0f) / 3.0f);
-            m_deathText.text = "How fucked you are: " + (int)m_deathChance + "%";
+            //m_deathText.text = "How fucked you are: " + (int)m_deathChance + "%";
         }
 
         if ((int)m_deathChance == 100)
