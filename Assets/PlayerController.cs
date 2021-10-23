@@ -34,9 +34,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject m_safe;
     [SerializeField] private float m_lightDistanceThreshold;
 
+    [SerializeField] private GameObject _pAdd;
+    [SerializeField] private GameObject _pAlpha;
+    [SerializeField] private GameObject _pGlow;
+
     private bool m_iAmDead = false;
 
-    private int m_oilLamps = 0;
+    //private int m_oilLamps = 0;
     private int m_litLamps = 0;
 
     private float m_deathChance = 0.0f;
@@ -51,8 +55,11 @@ public class PlayerController : MonoBehaviour
         m_iAmDead = false;
         m_deathChance = 0.0f;
         m_light.intensity = 3.0f;
+        _pAdd.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
+        _pAlpha.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
+        _pGlow.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
         m_matchTimer = 20.0f;
-        m_oilLamps = 0;
+        //m_oilLamps = 0;
         m_litLamps = 0;
         Physics.IgnoreCollision(GetComponentInParent<Collider>(), GetComponent<Collider>());
     }
@@ -81,6 +88,9 @@ public class PlayerController : MonoBehaviour
                 if (m_matchTimer < 0.01f)
                 {
                     m_light.intensity = Mathf.Lerp(m_light.intensity, 0.0f, Time.deltaTime / m_matchDuration);
+                    _pAdd.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
+                    _pAlpha.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
+                    _pGlow.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
                     if (m_light.intensity < 0.01f)
                     {
                         m_light.intensity = 0.0f;
@@ -95,6 +105,9 @@ public class PlayerController : MonoBehaviour
             {
                 m_safe.SetActive(true);
                 m_light.intensity = 3.0f;
+                _pAdd.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
+                _pAlpha.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
+                _pGlow.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
                 m_matchTimer = 5.0f;
             }
         
