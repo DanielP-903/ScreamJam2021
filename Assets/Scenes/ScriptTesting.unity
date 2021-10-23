@@ -14476,10 +14476,6 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7453557132475419753, guid: 03f44e66d061304498ee20d3ec3264a4, type: 3}
-      propertyPath: m_death
-      value: 
-      objectReference: {fileID: 49283128}
-    - target: {fileID: 7453557132475419753, guid: 03f44e66d061304498ee20d3ec3264a4, type: 3}
       propertyPath: ambience1
       value: 
       objectReference: {fileID: 59642498}
@@ -14503,14 +14499,6 @@ PrefabInstance:
       propertyPath: m_deathScreen
       value: 
       objectReference: {fileID: 49283128}
-    - target: {fileID: 7453557132475419753, guid: 03f44e66d061304498ee20d3ec3264a4, type: 3}
-      propertyPath: m_matchWaitTimer
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7453557132475419753, guid: 03f44e66d061304498ee20d3ec3264a4, type: 3}
-      propertyPath: m_matchFizzleDuration
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03f44e66d061304498ee20d3ec3264a4, type: 3}
 --- !u!1001 &1684406742
