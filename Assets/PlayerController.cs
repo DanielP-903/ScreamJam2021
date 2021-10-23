@@ -9,11 +9,11 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    private bool m_moveForward = false;
-    private bool m_moveBackward = false;
-    private bool m_rotLeft = false;
-    private bool m_rotRight = false;
-    private bool m_interact = false;
+    internal bool m_moveForward = false;
+    internal bool m_moveBackward = false;
+    internal bool m_rotLeft = false;
+    internal bool m_rotRight = false;
+    internal bool m_interact = false;
     private float m_inputTimer = 0.0f;
 
     [SerializeField] private float m_timeBetweenInputs = 0.0f;
@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
         m_iAmDead = false;
         m_deathChance = 0.0f;
         m_light.intensity = 3.0f;
-        m_matchTimer = 5.0f;
+        m_matchTimer = 20.0f;
         m_oilLamps = 0;
         m_litLamps = 0;
         Physics.IgnoreCollision(GetComponentInParent<Collider>(), GetComponent<Collider>());
