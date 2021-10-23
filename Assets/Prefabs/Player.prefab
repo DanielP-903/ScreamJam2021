@@ -465,11 +465,11 @@ MonoBehaviour:
   m_rotationSpeed: 0.5
   darkness: {fileID: 888645153033489506}
   hands: {fileID: 5146456274591400852}
-  m_matchDuration: 1
-  m_matchTimer: 20
+  m_matchWaitTimer: 10
   m_matchObject: {fileID: 390574760299125374}
   m_oilText: {fileID: 0}
-  m_death: {fileID: 0}
+  m_deathScreen: {fileID: 0}
+  m_winScreen: {fileID: 0}
   m_lightDistanceThreshold: 3
   _pAdd: {fileID: 2197022942382604277}
   _pAlpha: {fileID: 2197022943069014389}
