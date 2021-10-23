@@ -22,7 +22,8 @@ public class PlayerController : MonoBehaviour
 
     private readonly Vector3 m_gravity = new Vector3(0, -9.8f, 0);
     private CharacterController m_characterController;
-
+    [SerializeField] private GameObject darkness;
+    [SerializeField] private GameObject hands;
     internal bool IsHoldingMatch { get; set; }
 
     [SerializeField] private float m_matchDuration = 5.0f;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private GameObject m_matchObject;
     //[SerializeField] private TMPro.TextMeshProUGUI m_deathText;
+    [SerializeField] private TMPro.TextMeshProUGUI m_oilText;
     [SerializeField] private GameObject m_death;
     //[SerializeField] private GameObject m_safe;
     [SerializeField] private float m_lightDistanceThreshold;
@@ -37,12 +39,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject _pAdd;
     [SerializeField] private GameObject _pAlpha;
     [SerializeField] private GameObject _pGlow;
-
+    [SerializeField] private AudioSource ghostVoice;
+    [SerializeField] private AudioSource ambience1;
+    [SerializeField] private AudioSource ambience2;
     private bool m_iAmDead = false;
 
     private int m_oilCans = 0;
     private int m_litLamps = 0;
-
+    private int m_depositedOil = 0;
     private float m_deathChance = 0.0f;
 
     private Light m_light;
@@ -58,9 +62,19 @@ public class PlayerController : MonoBehaviour
         _pAdd.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
         _pAlpha.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
         _pGlow.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
-        m_matchTimer = 20.0f;
+        darkness.transform.localScale = new Vector3(1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f));
+        hands.transform.localScale = new Vector3(1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f));
+        ghostVoice.volume = 1.0f - (m_light.intensity / 3.0f);
+        ambience1.volume = (m_light.intensity / 3.0f);
+        ambience2.volume = (m_light.intensity / 3.0f);
+        ghostVoice.volume = 0.0f;
+        ghostVoice.loop = true;
+
+        m_matchTimer = 10.0f;
         m_oilCans = 0;
+        m_oilText.text = m_oilCans.ToString();
         m_litLamps = 0;
+        m_depositedOil = 0;
         Physics.IgnoreCollision(GetComponentInParent<Collider>(), GetComponent<Collider>());
     }
 
@@ -69,7 +83,20 @@ public class PlayerController : MonoBehaviour
         GameObject[] lightSources = GameObject.FindGameObjectsWithTag("LightableLamp");
         foreach (var source in lightSources)
         {
-            if (Vector3.Distance(source.transform.position, transform.parent.position) < m_lightDistanceThreshold && source.GetComponent<LightableLamp>().Lit)
+            if (source.GetComponent<LightableLamp>())
+            {
+                if (Vector3.Distance(source.transform.position, transform.parent.position) < m_lightDistanceThreshold &&
+                    source.GetComponent<LightableLamp>().Lit)
+                {
+                    return true;
+                }
+            }
+
+        }
+        GameObject[] campfires = GameObject.FindGameObjectsWithTag("CampFire");
+        foreach (var source in campfires)
+        {
+            if (Vector3.Distance(source.transform.position, transform.parent.position) < m_lightDistanceThreshold + 2.0f)
             {
                 return true;
             }
@@ -87,10 +114,23 @@ public class PlayerController : MonoBehaviour
                 //m_safe.SetActive(false);
                 if (m_matchTimer < 0.01f)
                 {
+                    if (ghostVoice.isPlaying == false)
+                    {
+                        ghostVoice.Play();
+                    }
+
                     m_light.intensity = Mathf.Lerp(m_light.intensity, 0.0f, Time.deltaTime / m_matchDuration);
                     _pAdd.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
                     _pAlpha.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
                     _pGlow.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
+
+                    darkness.transform.localScale = new Vector3(1.0f - (m_light.intensity/3.0f), 1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f));
+                    hands.transform.localScale = new Vector3(1.0f - (m_light.intensity/3.0f), 1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f));
+
+                    ghostVoice.volume = 1.0f - (m_light.intensity / 3.0f);
+                    ambience1.volume = (m_light.intensity / 3.0f);
+                    //ambience2.volume = (m_light.intensity / 3.0f);
+
                     if (m_light.intensity < 0.01f)
                     {
                         m_light.intensity = 0.0f;
@@ -108,7 +148,16 @@ public class PlayerController : MonoBehaviour
                 _pAdd.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
                 _pAlpha.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
                 _pGlow.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
+                darkness.transform.localScale = new Vector3(1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f));
+                hands.transform.localScale = new Vector3(1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f), 1.0f - (m_light.intensity / 3.0f));
+                ghostVoice.volume = 1.0f - (m_light.intensity / 3.0f);
+                ambience1.volume = (m_light.intensity / 3.0f);
+                ambience2.volume = (m_light.intensity / 3.0f);
                 m_matchTimer = 5.0f;
+                if (ghostVoice.isPlaying == true)
+                {
+                    ghostVoice.Stop();
+                }
             }
         
             m_deathChance = 100.0f - ((m_light.intensity * 100.0f) / 3.0f);
@@ -119,6 +168,7 @@ public class PlayerController : MonoBehaviour
         {
             m_death.SetActive(true);
             m_iAmDead = true;
+            ghostVoice.loop = false;
             if (m_interact && m_inputTimer == 0.0f)
             {
                 SceneManager.LoadScene(0);
@@ -223,6 +273,16 @@ public class PlayerController : MonoBehaviour
                 {
                     collider.gameObject.GetComponent<OilCanPickup>().PickedUp = true;
                     m_oilCans++;
+                    m_oilText.text = m_oilCans.ToString();
+                    collider.gameObject.SetActive(false);
+                }
+            }
+            else if (collider.tag == "Well")
+            {
+                m_depositedOil = m_oilCans;
+                if (m_depositedOil >= 3)
+                {
+                    Debug.Log("WIN!");
                 }
             }
         }

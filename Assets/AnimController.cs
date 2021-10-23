@@ -17,7 +17,7 @@ public class AnimController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (m_playerRef.GetComponent<PlayerController>().m_moveForward)
+        if (m_playerRef.GetComponent<PlayerController>().m_moveForward || m_playerRef.GetComponent<PlayerController>().m_moveBackward)
         {
             animator.SetBool("IsWalking", true);
         }
