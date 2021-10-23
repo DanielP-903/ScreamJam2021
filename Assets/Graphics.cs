@@ -40,4 +40,31 @@ public class Graphics : MonoBehaviour
                 }
         }
     }
+
+    void Update()
+    {
+        switch (QualitySettings.GetQualityLevel())
+        {
+            case (0):
+            {
+                graphicsLow.GetComponent<Button>().Select();
+                break;
+            }
+            case (2):
+            {
+                graphicsMed.GetComponent<Button>().Select();
+                break;
+            }
+            case (4):
+            {
+                graphicsHigh.GetComponent<Button>().Select();
+                break;
+            }
+            default:
+            {
+                graphicsMed.GetComponent<Button>().Select();
+                break;
+            }
+        }
+    }
 }
