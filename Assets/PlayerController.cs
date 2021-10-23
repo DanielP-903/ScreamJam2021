@@ -31,10 +31,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject m_matchObject;
     [SerializeField] private TMPro.TextMeshProUGUI m_deathText;
     [SerializeField] private GameObject m_death;
+    [SerializeField] private GameObject m_safe;
+    [SerializeField] private float m_lightDistanceThreshold;
 
     private bool m_iAmDead = false;
 
     private int m_oilLamps = 0;
+    private int m_litLamps = 0;
 
     private float m_deathChance = 0.0f;
 
@@ -42,21 +45,39 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        m_characterController = GetComponent<CharacterController>();
+        m_characterController = GetComponentInParent<CharacterController>();
         m_light = m_matchObject.GetComponentInChildren<Light>();
         IsHoldingMatch = true;
         m_iAmDead = false;
         m_deathChance = 0.0f;
         m_light.intensity = 3.0f;
         m_matchTimer = 5.0f;
+        m_oilLamps = 0;
+        m_litLamps = 0;
+        Physics.IgnoreCollision(GetComponentInParent<Collider>(), GetComponent<Collider>());
+    }
+
+    private bool CheckNearLightSources()
+    {
+        GameObject[] lightSources = GameObject.FindGameObjectsWithTag("LightableLamp");
+        foreach (var source in lightSources)
+        {
+            if (Vector3.Distance(source.transform.position, transform.parent.position) < m_lightDistanceThreshold && source.GetComponent<LightableLamp>().Lit)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void UpdateMatch()
     {
         if (!m_iAmDead)
         {
-            if (IsHoldingMatch)
+            bool isCloseToLightSource = CheckNearLightSources();
+            if (IsHoldingMatch && !isCloseToLightSource)
             {
+                m_safe.SetActive(false);
                 if (m_matchTimer < 0.01f)
                 {
                     m_light.intensity = Mathf.Lerp(m_light.intensity, 0.0f, Time.deltaTime / m_matchDuration);
@@ -69,6 +90,12 @@ public class PlayerController : MonoBehaviour
                 {
                     m_matchTimer -= Time.deltaTime;
                 }
+            }
+            else if (isCloseToLightSource)
+            {
+                m_safe.SetActive(true);
+                m_light.intensity = 3.0f;
+                m_matchTimer = 5.0f;
             }
         
             m_deathChance = 100.0f - ((m_light.intensity * 100.0f) / 3.0f);
@@ -93,7 +120,7 @@ public class PlayerController : MonoBehaviour
         {
             if (m_moveForward || m_moveBackward)
             {
-                Vector3 move = m_moveForward ? (transform.forward * m_speed * Time.deltaTime) : (-transform.forward * (m_speed / 2) * Time.deltaTime);
+                Vector3 move = m_moveForward ? (transform.forward * m_speed * Time.deltaTime) : (-transform.forward * (m_speed / 1.5f) * Time.deltaTime);
                 m_characterController.Move(move);
             }
 
@@ -108,8 +135,7 @@ public class PlayerController : MonoBehaviour
                 if (m_interact)
                 {
                     m_inputTimer = m_timeBetweenInputs;
-                    m_light.intensity = 3.0f;
-                    m_matchTimer = 5.0f;
+
                 }
             }
 
@@ -167,7 +193,17 @@ public class PlayerController : MonoBehaviour
     {
         if (m_interact && m_inputTimer == 0.0f)
         {
-            // add interaction
+            if (collider.gameObject.GetComponent<LightableLamp>())
+            {
+                if (!collider.gameObject.GetComponent<LightableLamp>().Lit)
+                {
+                    collider.gameObject.GetComponent<LightableLamp>().Lit = true;
+                    m_litLamps++;
+                }
+
+                m_light.intensity = 3.0f;
+                m_matchTimer = 5.0f;
+            }
         }
     }
 }
