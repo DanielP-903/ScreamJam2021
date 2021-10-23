@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     private bool m_iAmDead = false;
 
-    //private int m_oilLamps = 0;
+    private int m_oilCans = 0;
     private int m_litLamps = 0;
 
     private float m_deathChance = 0.0f;
@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
         _pAlpha.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
         _pGlow.transform.localScale = new Vector3((m_light.intensity / 3.0f), (m_light.intensity / 3.0f), (m_light.intensity / 3.0f));
         m_matchTimer = 20.0f;
-        //m_oilLamps = 0;
+        m_oilCans = 0;
         m_litLamps = 0;
         Physics.IgnoreCollision(GetComponentInParent<Collider>(), GetComponent<Collider>());
     }
@@ -216,6 +216,14 @@ public class PlayerController : MonoBehaviour
 
                 m_light.intensity = 3.0f;
                 m_matchTimer = 5.0f;
+            }
+            else if (collider.gameObject.GetComponent<OilCanPickup>())
+            {
+                if (!collider.gameObject.GetComponent<OilCanPickup>().PickedUp)
+                {
+                    collider.gameObject.GetComponent<OilCanPickup>().PickedUp = true;
+                    m_oilCans++;
+                }
             }
         }
     }
