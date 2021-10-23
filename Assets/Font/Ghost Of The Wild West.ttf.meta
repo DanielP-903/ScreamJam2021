@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: d0f03a7c1c7635d44ba07ad1a11e275d
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Ghost Of The Wild West
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: e3cf727670848154dbf91e8fd0b95530, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
