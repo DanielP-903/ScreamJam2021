@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.Animations;
 
 public class AnimController : MonoBehaviour
 {
     [SerializeField] private GameObject m_playerRef;
-    private Animator animator;
+    private UnityEngine.Animator animator;
 
     // Start is called before the first frame update
     void Start()
